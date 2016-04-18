@@ -6,7 +6,6 @@ import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -43,7 +42,7 @@ public class SpatialFilteringActivity extends AppCompatActivity {
     private static final int CAMERA_GROUP_ID = 3;
     private static final int DEFAULT_GROUP_ID =4 ;
     private static final int COLOR_GROUP_ID =5 ;
-
+    private static final int FILTER_GROUP_ID =6 ;
 
     private MyJavaCameraView mOpenCvCameraView;
     private Button mSaveButton;
@@ -139,6 +138,11 @@ public class SpatialFilteringActivity extends AppCompatActivity {
         colorMenu.add(COLOR_GROUP_ID, CameraListener.VIEW_MODE_RGBA, Menu.NONE, "RGBA");
         colorMenu.add(COLOR_GROUP_ID, CameraListener.VIEW_MODE_GRAYSCALE, Menu.NONE, "Grayscale");
 
+        Menu filteringMenu = menu.addSubMenu("Filter");
+        SubMenu linearMenu = filteringMenu.addSubMenu("Linear");
+        linearMenu.addSubMenu(FILTER_GROUP_ID, CameraListener.VIEW_MODE_SOBEL,
+                Menu.NONE,"Sobel");
+        SubMenu nonLinearSubMenu = filteringMenu.addSubMenu("non-Linear");
 
         return true;
     }
@@ -175,12 +179,17 @@ public class SpatialFilteringActivity extends AppCompatActivity {
                 Toast.makeText(this, res.width + "x" + res.height, Toast.LENGTH_SHORT).show();
             break;
             case CAMERA_GROUP_ID:
-
                 mOpenCvCameraView.changeCameraIndex(mCameraIDarray[id]);
                 String caption = mCameraNames[id] + " camera";
                 Toast.makeText(this, caption, Toast.LENGTH_SHORT).show();
                 setResoltuionMenu(mResolutionSubMenu);
             break;
+            case FILTER_GROUP_ID:
+                if (id == CameraListener.VIEW_MODE_SOBEL) {
+                    mCameraListener.setViewMode(id);
+                }
+                break;
+
             }
 
 

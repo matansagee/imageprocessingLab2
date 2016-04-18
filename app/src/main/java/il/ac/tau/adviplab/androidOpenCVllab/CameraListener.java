@@ -3,6 +3,8 @@ package il.ac.tau.adviplab.androidOpenCVllab;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.core.Mat;
 
+import il.ac.tau.adviplab.myimageproc.MyImageProc;
+
 /**
  * Created by amitboy on 2/28/2015.
  */
@@ -14,14 +16,16 @@ public class CameraListener implements CameraBridgeViewBase.CvCameraViewListener
     public static final int VIEW_MODE_DEFAULT = 0;
     public static final int VIEW_MODE_RGBA = 1;
     public static final int VIEW_MODE_GRAYSCALE =2;
+    public static final int VIEW_MODE_SOBEL =3;
 
     //Mode selectors:
     private int mViewMode = VIEW_MODE_DEFAULT;
     private int mColorMode = VIEW_MODE_RGBA;
-
+    private int mFilterMode = VIEW_MODE_SOBEL;
 
     //members
     Mat mImToProcess;
+    Mat mFilteredImage;
 
     //Getters and setters
     //todo: add to tutorial
@@ -45,11 +49,13 @@ public class CameraListener implements CameraBridgeViewBase.CvCameraViewListener
 
     @Override
         public void onCameraViewStarted(int width, int height) {
+        mFilteredImage = new Mat();
 
         }
 
         @Override
         public void onCameraViewStopped() {
+            mFilteredImage.release();
 
         }
 
@@ -67,11 +73,19 @@ public class CameraListener implements CameraBridgeViewBase.CvCameraViewListener
             switch (this.mViewMode) {
                 case VIEW_MODE_DEFAULT:
                     break;
+                case VIEW_MODE_SOBEL:
+                    MyImageProc.sobelCalcDisplay(mImToProcess,
+                            inputFrame.gray(),
+                            mFilteredImage);
+                    break;
             }
             return mImToProcess;
         }
 
-    };
+    public void setFilterMode(int filterMode) {
+        mFilterMode = filterMode;
+    }
+};
 
 
 
