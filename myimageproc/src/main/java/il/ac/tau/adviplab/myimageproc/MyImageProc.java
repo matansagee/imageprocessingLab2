@@ -20,8 +20,11 @@ import java.util.List;
 public class MyImageProc  {
 
     public static final int HIST_NORMALIZATION_CONST = 10000;
-    private static final int COMP_MATCH_DISTANCE = 99;
-    private static final int SIGMA_SPATIAL_DEFAULT = 10;
+    public static final int COMP_MATCH_DISTANCE = 99;
+    public static final int SIGMA_SPATIAL_DEFAULT = 10;
+    public static final int SIGMA_INTENSITY_DEFAULT = 50;
+    public static final int SIGMA_SPATIAL_MAX = 20;
+    public static final int SIGMA_INTENSITY_MAX =100;
 
     public static void calcHist(Mat image, Mat[] histList, int histSizeNum,
                                 int normalizationConst, int normalizationNorm) {
@@ -283,7 +286,7 @@ public class MyImageProc  {
     public static void sobelCalcDisplay(Mat displayImage ,Mat inputImage,Mat filteredImage) {
         //The function applies the Sobel filter, and returns the result in a format suitable for display.
         int[] window = setWindow(displayImage);
-        sobelFilter(inputImage,filteredImage,window);
+        sobelFilter(inputImage, filteredImage,window);
         displayFilter(displayImage,filteredImage,window);
     }
 
@@ -304,14 +307,73 @@ public class MyImageProc  {
         }
     }
 
+    public static void gaussianFilter(Mat inputImage, Mat outputImage,
+                                      int[] window){
+        gaussianFilter(inputImage,outputImage,window,SIGMA_SPATIAL_DEFAULT);
+    }
+
     public static void gaussianCalcDisplay(Mat displayImage ,Mat
             inputImage,Mat filteredImage, float sigma){
+
         int[] window = setWindow(displayImage);
-        //Add your implementation here. This function accepts sigma as input.
+        gaussianFilter(inputImage, filteredImage, window, sigma);
+        displayFilter(displayImage, filteredImage, window);
     }
+
     public static void gaussianCalcDisplay(Mat displayImage ,Mat
             inputImage,Mat filteredImage) {
-        //Add your implementation here - this overloaded function uses the default sigma.
+
+        gaussianCalcDisplay(displayImage, inputImage, filteredImage, SIGMA_SPATIAL_DEFAULT);
+    }
+
+    public static void bilateralFilter(Mat inputImage, Mat outputImage,
+                                       int[] window, float sigmaSpatial, float sigmaIntensity){
+    //Applies bilateralFilter filter to image
+        Mat grayInnerWindow =
+                inputImage.submat(window[0],window[1],window[2],window[3]);
+        int d = 4*(int)sigmaSpatial+1;
+        try {
+            Imgproc.bilateralFilter(grayInnerWindow, outputImage, d,
+                    sigmaIntensity, sigmaSpatial);
+            grayInnerWindow.release();
+        }catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }
+
+    public static void bilateralFilter(Mat inputImage, Mat outputImage,
+                                       int[] window) {
+        bilateralFilter(inputImage,outputImage,window,
+                SIGMA_SPATIAL_DEFAULT,
+                SIGMA_INTENSITY_DEFAULT);
+
+    }
+
+    public static void bilateralCalcDisplay(Mat displayImage ,Mat
+            inputImage,Mat filteredImage){
+
+        bilateralCalcDisplay(displayImage,
+                inputImage,filteredImage,SIGMA_SPATIAL_DEFAULT, SIGMA_INTENSITY_DEFAULT);
+    }
+
+    public static void bilateralCalcDisplay(Mat displayImage ,Mat
+            inputImage,Mat filteredImage,float sigmaSpatial, float sigmaIntensity){
+
+        int[] window = setWindow(displayImage);
+        bilateralFilter(inputImage, filteredImage, window,sigmaSpatial,sigmaIntensity);
+        displayFilter(displayImage, filteredImage, window);
+    }
+
+    public static void unsharpMasking(Mat inputImage ,Mat outputImage,
+                                      int[] window,float sigmaSpatial, float sigmaIntensity) {
+        float alpha = sigmaSpatial;
+        float beta = sigmaIntensity;
+        gaussianFilter(inputImage, outputImage, window, sigmaSpatial);
+        Mat gaussian = new Mat();
+        outputImage.copyTo(gaussian);
+        // Mat src1, double alpha, Mat src2, Mat dst
+        Mat post
+        outputImage = Core.scaleAdd(outputImage,-alpha,gaussian,outputImage);
     }
 
 }

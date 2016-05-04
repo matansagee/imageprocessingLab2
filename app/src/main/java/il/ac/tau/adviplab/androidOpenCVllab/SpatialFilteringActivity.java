@@ -2,6 +2,7 @@ package il.ac.tau.adviplab.androidOpenCVllab;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
@@ -37,12 +38,14 @@ public class SpatialFilteringActivity extends AppCompatActivity {
     //flags
     private Boolean mSettingsMenuAvaialable =false;
 
-    private static final int SETTINGS_GROUP_ID=1;
-    private static final int RESOLUTION_GROUP_ID = 2;
-    private static final int CAMERA_GROUP_ID = 3;
-    private static final int DEFAULT_GROUP_ID =4 ;
-    private static final int COLOR_GROUP_ID =5 ;
-    private static final int FILTER_GROUP_ID =6 ;
+    protected static final int SETTINGS_GROUP_ID=1;
+    protected static final int RESOLUTION_GROUP_ID = 2;
+    protected static final int CAMERA_GROUP_ID = 3;
+    protected static final int DEFAULT_GROUP_ID =4 ;
+    protected static final int COLOR_GROUP_ID =5 ;
+    protected static final int FILTER_GROUP_ID =6 ;
+    protected static final int STILL_GROUP_ID =7;
+
 
     private MyJavaCameraView mOpenCvCameraView;
     private Button mSaveButton;
@@ -142,7 +145,15 @@ public class SpatialFilteringActivity extends AppCompatActivity {
         SubMenu linearMenu = filteringMenu.addSubMenu("Linear");
         linearMenu.addSubMenu(FILTER_GROUP_ID, CameraListener.VIEW_MODE_SOBEL,
                 Menu.NONE,"Sobel");
+        linearMenu.addSubMenu(FILTER_GROUP_ID, CameraListener.VIEW_MODE_GAUSSIAN,
+                Menu.NONE,"Gaussian");
+        linearMenu.addSubMenu(FILTER_GROUP_ID, CameraListener.VIEW_MODE_BILATERAL,
+                Menu.NONE,"Bilateral");
         SubMenu nonLinearSubMenu = filteringMenu.addSubMenu("non-Linear");
+
+        menu.add(STILL_GROUP_ID, CameraListener.VIEW_MODE_DEFAULT,
+                Menu.NONE, "Still mode");
+
 
         return true;
     }
@@ -185,9 +196,12 @@ public class SpatialFilteringActivity extends AppCompatActivity {
                 setResoltuionMenu(mResolutionSubMenu);
             break;
             case FILTER_GROUP_ID:
-                if (id == CameraListener.VIEW_MODE_SOBEL) {
                     mCameraListener.setViewMode(id);
-                }
+                break;
+
+            case STILL_GROUP_ID:
+                Intent i= new Intent(this, StillsActivity.class);
+                startActivity(i);
                 break;
 
             }

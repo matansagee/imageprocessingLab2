@@ -17,6 +17,8 @@ public class CameraListener implements CameraBridgeViewBase.CvCameraViewListener
     public static final int VIEW_MODE_RGBA = 1;
     public static final int VIEW_MODE_GRAYSCALE =2;
     public static final int VIEW_MODE_SOBEL =3;
+    public static final int VIEW_MODE_GAUSSIAN =4;
+    public static final int VIEW_MODE_BILATERAL =5;
 
     //Mode selectors:
     private int mViewMode = VIEW_MODE_DEFAULT;
@@ -75,6 +77,16 @@ public class CameraListener implements CameraBridgeViewBase.CvCameraViewListener
                     break;
                 case VIEW_MODE_SOBEL:
                     MyImageProc.sobelCalcDisplay(mImToProcess,
+                            inputFrame.gray(),
+                            mFilteredImage);
+                    break;
+                case VIEW_MODE_GAUSSIAN:
+                    MyImageProc.gaussianCalcDisplay(mImToProcess,
+                            inputFrame.gray(),
+                            mFilteredImage);
+                    break;
+                case VIEW_MODE_BILATERAL:
+                    MyImageProc.bilateralCalcDisplay(mImToProcess,
                             inputFrame.gray(),
                             mFilteredImage);
                     break;

@@ -5,5 +5,10 @@
     <string name="activity_name">spatialFilteringActivity</string>
 
     <string name="save_button">Save</string>
+    <string name="title_activity_stills">StillsActivity</string>
+
+    <string name="notAvilable">This feature is not available in still mode</string>
+    <string name="stringSpatial">Spatial</string>
+    <string name="stringIntensity">Intensity</string>
 
 </resources>
