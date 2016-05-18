@@ -10,5 +10,7 @@
     <string name="notAvilable">This feature is not available in still mode</string>
     <string name="stringSpatial">Spatial</string>
     <string name="stringIntensity">Intensity</string>
+    <string name="alpha">Alpha</string>
+    <string name="beta">Beta</string>
 
 </resources>

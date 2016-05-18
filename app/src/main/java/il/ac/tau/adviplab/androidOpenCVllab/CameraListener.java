@@ -19,6 +19,7 @@ public class CameraListener implements CameraBridgeViewBase.CvCameraViewListener
     public static final int VIEW_MODE_SOBEL =3;
     public static final int VIEW_MODE_GAUSSIAN =4;
     public static final int VIEW_MODE_BILATERAL =5;
+    public static final int VIEW_MODE_UNSHARP_MASKING = 6;
 
     //Mode selectors:
     private int mViewMode = VIEW_MODE_DEFAULT;

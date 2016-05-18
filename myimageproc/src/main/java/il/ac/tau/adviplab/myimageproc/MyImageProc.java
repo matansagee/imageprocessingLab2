@@ -309,7 +309,7 @@ public class MyImageProc  {
 
     public static void gaussianFilter(Mat inputImage, Mat outputImage,
                                       int[] window){
-        gaussianFilter(inputImage,outputImage,window,SIGMA_SPATIAL_DEFAULT);
+        gaussianFilter(inputImage, outputImage, window, SIGMA_SPATIAL_DEFAULT);
     }
 
     public static void gaussianCalcDisplay(Mat displayImage ,Mat
@@ -343,7 +343,7 @@ public class MyImageProc  {
 
     public static void bilateralFilter(Mat inputImage, Mat outputImage,
                                        int[] window) {
-        bilateralFilter(inputImage,outputImage,window,
+        bilateralFilter(inputImage, outputImage, window,
                 SIGMA_SPATIAL_DEFAULT,
                 SIGMA_INTENSITY_DEFAULT);
 
@@ -353,27 +353,33 @@ public class MyImageProc  {
             inputImage,Mat filteredImage){
 
         bilateralCalcDisplay(displayImage,
-                inputImage,filteredImage,SIGMA_SPATIAL_DEFAULT, SIGMA_INTENSITY_DEFAULT);
+                inputImage, filteredImage, SIGMA_SPATIAL_DEFAULT, SIGMA_INTENSITY_DEFAULT);
     }
 
     public static void bilateralCalcDisplay(Mat displayImage ,Mat
             inputImage,Mat filteredImage,float sigmaSpatial, float sigmaIntensity){
 
         int[] window = setWindow(displayImage);
-        bilateralFilter(inputImage, filteredImage, window,sigmaSpatial,sigmaIntensity);
+        bilateralFilter(inputImage, filteredImage, window, sigmaSpatial, sigmaIntensity);
         displayFilter(displayImage, filteredImage, window);
     }
 
-    public static void unsharpMasking(Mat inputImage ,Mat outputImage,
-                                      int[] window,float sigmaSpatial, float sigmaIntensity) {
-        float alpha = sigmaSpatial;
-        float beta = sigmaIntensity;
-        gaussianFilter(inputImage, outputImage, window, sigmaSpatial);
-        Mat gaussian = new Mat();
-        outputImage.copyTo(gaussian);
-        // Mat src1, double alpha, Mat src2, Mat dst
-        Mat post
-        outputImage = Core.scaleAdd(outputImage,-alpha,gaussian,outputImage);
-    }
+    public static void unsharpMaskingDisplay(Mat imToDisplay, Mat inputImage, Mat filteredImage, float sigmaSpatial, float alpha,float beta) {
+        int[] window = setWindow(imToDisplay);
 
+        inputImage.convertTo(inputImage,CvType.CV_32FC1);
+        filteredImage.convertTo(filteredImage, CvType.CV_32FC1);
+
+        Mat grayInnerWindow =
+                inputImage.submat(window[0],window[1],window[2],window[3]);
+
+        gaussianFilter(inputImage, filteredImage, window, sigmaSpatial);
+        Core.addWeighted(grayInnerWindow,1,filteredImage, -alpha, 0, filteredImage);
+        Core.addWeighted(grayInnerWindow,1, filteredImage, beta,0, filteredImage);
+        Core.multiply(filteredImage,new Scalar(1/(1+beta-beta*alpha)),filteredImage);
+
+        filteredImage.convertTo(filteredImage, CvType.CV_8UC1);
+        displayFilter(imToDisplay, filteredImage, window);
+
+    }
 }

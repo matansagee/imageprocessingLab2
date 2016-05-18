@@ -37,6 +37,10 @@ public class StillsActivity extends SpatialFilteringActivity {
     private TextView mTextViewSpatial;
     private TextView mTextViewIntensity;
     private MenuItem mSelectedItem;
+    private SeekBar mSeekBarAlpha;
+    private TextView mTextViewAlpha;
+    private SeekBar mSeekBarBeta;
+    private TextView mTextViewBeta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +65,6 @@ public class StillsActivity extends SpatialFilteringActivity {
         });
 
         mSeekBarSpatial = (SeekBar) findViewById(R.id.seekBarSpatial);
-        mSeekBarIntensity = (SeekBar) findViewById(R.id.seekBarIntensity);
-        mTextViewSpatial = (TextView) findViewById(R.id.sigmaSpatialTextView);
-        mTextViewIntensity = (TextView) findViewById(R.id.sigmaIntensityTextView);
-
-        mSeekBarSpatial = (SeekBar) findViewById(R.id.seekBarSpatial);
         mTextViewSpatial = (TextView)
                 findViewById(R.id.sigmaSpatialTextView);
         setSeekBar(mSeekBarSpatial, mTextViewSpatial,
@@ -76,6 +75,13 @@ public class StillsActivity extends SpatialFilteringActivity {
                 findViewById(R.id.sigmaIntensityTextView);
         setSeekBar(mSeekBarIntensity,mTextViewIntensity, getResources()
                 .getString(R.string.stringIntensity),MyImageProc.SIGMA_INTENSITY_MAX);
+
+        mSeekBarAlpha = (SeekBar) findViewById(R.id.seekBarAlpha);
+        mTextViewAlpha = (TextView) findViewById(R.id.alphaTextView);
+        setSeekBar(mSeekBarAlpha, mTextViewAlpha, getResources().getString(R.string.alpha),10);
+        mSeekBarBeta = (SeekBar) findViewById(R.id.seekBarBeta);
+        mTextViewBeta = (TextView) findViewById(R.id.betaTextView);
+        setSeekBar(mSeekBarBeta,mTextViewBeta, getResources() .getString(R.string.beta),10);
 
     }
 
@@ -99,8 +105,7 @@ public class StillsActivity extends SpatialFilteringActivity {
                                                        public void onStopTrackingTouch(SeekBar seekBar) {
                                                            float sigma = ((float) seekbar.getProgress() / (float)
                                                                    seekbar.getMax()) * sigmaMax;
-                                                           textview.setText(string+sigma);
-//Call the filter again
+                                                           textview.setText(string+sigma);//Call the filter again
                                                            if (mSelectedItem !=null) {
                                                                int groupId = mSelectedItem.getGroupId();
                                                                if (groupId == FILTER_GROUP_ID) {
@@ -174,7 +179,7 @@ public class StillsActivity extends SpatialFilteringActivity {
 
     public static void filterImage(int id, Mat imToDisplay, Mat
             imToProcess, Mat filteredImage, float sigmaSpatial, float
-                                           sigmaIntensity) {
+                                           sigmaIntensity,float alpha,float beta) {
         switch (id) {
             case CameraListener.VIEW_MODE_SOBEL:
                 int[] window = MyImageProc.setWindow(imToProcess);
@@ -194,6 +199,11 @@ public class StillsActivity extends SpatialFilteringActivity {
                             sigmaIntensity);
                 }
                 break;
+            case CameraListener.VIEW_MODE_UNSHARP_MASKING:
+                MyImageProc.unsharpMaskingDisplay(imToDisplay,
+                        imToProcess, filteredImage, sigmaSpatial,
+                        alpha,beta);
+                break;
         }
     }
 
@@ -208,14 +218,20 @@ public class StillsActivity extends SpatialFilteringActivity {
                 String TAG = "launcherDialogTag";
                 try {
                     // Here you should write your time consuming task...
-                    float sigmaSpatial = mSeekBarSpatial.getProgress();
-                    float sigmaIntensity = mSeekBarIntensity.getProgress();
+                    float sigmaSpatial = ((float) mSeekBarSpatial.getProgress() / (float)
+                            mSeekBarSpatial.getMax()) * MyImageProc.SIGMA_SPATIAL_MAX;
+                    float sigmaIntensity = ((float) mSeekBarIntensity.getProgress() / (float)
+                            mSeekBarIntensity.getMax()) * MyImageProc.SIGMA_INTENSITY_MAX;
+                    float alpha = ((float) mSeekBarAlpha.getProgress() / (float)
+                            mSeekBarAlpha.getMax()) * 10;
+                    float beta = ((float) mSeekBarBeta.getProgress() / (float)
+                            mSeekBarBeta.getMax()) * 10;
                     mBitmap = Util.getBitmap(StillsActivity.this,mURI);
                     Utils.bitmapToMat(mBitmap, mImToProcess);
                     Imgproc.cvtColor(mImToProcess, mImGray,
                             Imgproc.COLOR_RGBA2GRAY);
                     filterImage(id, mImToProcess, mImGray, mFilteredImage,
-                            sigmaSpatial, sigmaIntensity);
+                            sigmaSpatial, sigmaIntensity,alpha,beta);
                     mBitmap = Bitmap.createBitmap(mImToProcess.cols(),
                             mImToProcess.rows(), Bitmap.Config.RGB_565);
                     Utils.matToBitmap(mImToProcess, mBitmap, true);
