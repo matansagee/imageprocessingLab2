@@ -147,12 +147,12 @@ public class SpatialFilteringActivity extends AppCompatActivity {
                 Menu.NONE,"Sobel");
         linearMenu.addSubMenu(FILTER_GROUP_ID, CameraListener.VIEW_MODE_GAUSSIAN,
                 Menu.NONE,"Gaussian");
-        linearMenu.addSubMenu(FILTER_GROUP_ID, CameraListener.VIEW_MODE_BILATERAL,
-                Menu.NONE,"Bilateral");
+
         linearMenu.addSubMenu(FILTER_GROUP_ID, CameraListener.VIEW_MODE_UNSHARP_MASKING,
                 Menu.NONE,"Unsharp Masking");
         SubMenu nonLinearSubMenu = filteringMenu.addSubMenu("non-Linear");
-
+        nonLinearSubMenu.addSubMenu(FILTER_GROUP_ID, CameraListener.VIEW_MODE_BILATERAL,
+                Menu.NONE,"Bilateral");
         menu.add(STILL_GROUP_ID, CameraListener.VIEW_MODE_DEFAULT,
                 Menu.NONE, "Still mode");
 

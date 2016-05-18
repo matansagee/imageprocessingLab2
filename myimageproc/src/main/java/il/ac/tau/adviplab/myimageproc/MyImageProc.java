@@ -21,10 +21,14 @@ public class MyImageProc  {
 
     public static final int HIST_NORMALIZATION_CONST = 10000;
     public static final int COMP_MATCH_DISTANCE = 99;
-    public static final int SIGMA_SPATIAL_DEFAULT = 10;
-    public static final int SIGMA_INTENSITY_DEFAULT = 50;
+    public static final int SIGMA_SPATIAL_DEFAULT = 0;
+    public static final int SIGMA_INTENSITY_DEFAULT = 0;
+    public static final int ALPHA_DEFAULT = 0;
+    public static final int BETA_DEFAULT = 0;
     public static final int SIGMA_SPATIAL_MAX = 20;
     public static final int SIGMA_INTENSITY_MAX =100;
+    public static final int BETA_MAX = 10;
+    public static final int ALPHA_MAX = 1;
 
     public static void calcHist(Mat image, Mat[] histList, int histSizeNum,
                                 int normalizationConst, int normalizationNorm) {
@@ -380,6 +384,5 @@ public class MyImageProc  {
 
         filteredImage.convertTo(filteredImage, CvType.CV_8UC1);
         displayFilter(imToDisplay, filteredImage, window);
-
     }
 }

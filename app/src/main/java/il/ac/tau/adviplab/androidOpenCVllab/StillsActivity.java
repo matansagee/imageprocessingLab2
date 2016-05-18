@@ -105,8 +105,8 @@ public class StillsActivity extends SpatialFilteringActivity {
                                                        public void onStopTrackingTouch(SeekBar seekBar) {
                                                            float sigma = ((float) seekbar.getProgress() / (float)
                                                                    seekbar.getMax()) * sigmaMax;
-                                                           textview.setText(string+sigma);//Call the filter again
-                                                           if (mSelectedItem !=null) {
+                                                           textview.setText(string + sigma);//Call the filter again
+                                                           if (mSelectedItem != null) {
                                                                int groupId = mSelectedItem.getGroupId();
                                                                if (groupId == FILTER_GROUP_ID) {
                                                                    launchRingDialog(mSelectedItem.getItemId());
@@ -150,11 +150,17 @@ public class StillsActivity extends SpatialFilteringActivity {
             case DEFAULT_GROUP_ID:
                 if (mURI!=null) {
                     mBitmap = Util.getBitmap(this, mURI);
-                    mImageView.setImageBitmap(Util.getResizedBitmap(mBitmap,1000));
-                    mSeekBarIntensity.setProgress(MyImageProc.SIGMA_INTENSITY_DEFAULT);
-                    mSeekBarSpatial.setProgress(MyImageProc.SIGMA_SPATIAL_DEFAULT);
+                    mImageView.setImageBitmap(Util.getResizedBitmap(mBitmap, 1000));
                 }
-                break;
+                mSeekBarIntensity.setProgress(MyImageProc.SIGMA_INTENSITY_DEFAULT);
+                mSeekBarSpatial.setProgress(MyImageProc.SIGMA_SPATIAL_DEFAULT);
+                mSeekBarAlpha.setProgress(MyImageProc.ALPHA_DEFAULT);
+                mSeekBarBeta.setProgress(MyImageProc.BETA_DEFAULT);
+                setSeekBar(mSeekBarIntensity, mTextViewIntensity, getResources().getString(R.string.stringIntensity), MyImageProc.SIGMA_INTENSITY_MAX);
+                setSeekBar(mSeekBarSpatial, mTextViewSpatial, getResources().getString(R.string.stringSpatial), MyImageProc.SIGMA_SPATIAL_MAX);
+                setSeekBar(mSeekBarAlpha, mTextViewAlpha, getResources().getString(R.string.alpha), MyImageProc.ALPHA_MAX);
+                setSeekBar(mSeekBarBeta, mTextViewBeta, getResources().getString(R.string.beta), MyImageProc.BETA_MAX);
+
             case COLOR_GROUP_ID:
                 if (mURI!=null) {
                     mBitmap = Util.getBitmap(this, mURI);
@@ -223,9 +229,9 @@ public class StillsActivity extends SpatialFilteringActivity {
                     float sigmaIntensity = ((float) mSeekBarIntensity.getProgress() / (float)
                             mSeekBarIntensity.getMax()) * MyImageProc.SIGMA_INTENSITY_MAX;
                     float alpha = ((float) mSeekBarAlpha.getProgress() / (float)
-                            mSeekBarAlpha.getMax()) * 10;
+                            mSeekBarAlpha.getMax()) * MyImageProc.ALPHA_MAX;
                     float beta = ((float) mSeekBarBeta.getProgress() / (float)
-                            mSeekBarBeta.getMax()) * 10;
+                            mSeekBarBeta.getMax()) * MyImageProc.BETA_MAX;
                     mBitmap = Util.getBitmap(StillsActivity.this,mURI);
                     Utils.bitmapToMat(mBitmap, mImToProcess);
                     Imgproc.cvtColor(mImToProcess, mImGray,
